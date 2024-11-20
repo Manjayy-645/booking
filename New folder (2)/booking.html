@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar Booking System</title>
+  <style>
+    /* Simple styling for the form */
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f9; }
+    .container { width: 60%; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+    h1 { text-align: center; color: #333; }
+    .form-group { margin-bottom: 15px; }
+    input, textarea, button { width: 100%; padding: 10px; margin: 5px 0; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
+    button { background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #45a049; }
+    .booking-list { margin-top: 20px; display: none; }
+    .booking-list ul { list-style-type: none; padding: 0; }
+    .booking-list li { padding: 10px; background-color: #f9f9f9; margin-bottom: 10px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Calendar Booking System</h1>
+
+    <!-- Booking Form -->
+    <div class="form-group">
+      <label for="name">Your Name:</label>
+      <input type="text" id="name" placeholder="Enter your name" required>
+    </div>
+    <div class="form-group">
+      <label for="date">Booking Date & Time:</label>
+      <input type="datetime-local" id="date" required>
+    </div>
+    <div class="form-group">
+      <label for="details">Booking Details:</label>
+      <textarea id="details" rows="3" placeholder="Enter booking details" required></textarea>
+    </div>
+    <button onclick="addBooking()">Add Booking</button>
+
+    <!-- Display Bookings -->
+    <div class="booking-list">
+      <h2>Existing Bookings</h2>
+      <ul id="bookingList"></ul>
+    </div>
+  </div>
+
+  <script>
+    // Function to add a booking
+    function addBooking() {
+      const name = document.getElementById('name').value;
+      const date = document.getElementById('date').value;
+      const details = document.getElementById('details').value;
+
+      // Validate inputs
+      if (name && date && details) {
+        const booking = { name, date, details };
+        let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+        bookings.push(booking);
+        localStorage.setItem('bookings', JSON.stringify(bookings));
+        alert("Booking added successfully!");
+        clearForm();
+      } else {
+        alert('Please fill in all fields');
+      }
+    }
+
+    // Function to clear the form after submission
+    function clearForm() {
+      document.getElementById('name').value = '';
+      document.getElementById('date').value = '';
+      document.getElementById('details').value = '';
+    }
+
+  </script>
+
+</body>
+</html>
