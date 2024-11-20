@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - View Bookings</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f9; }
+    .container { width: 80%; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+    h1 { text-align: center; color: #333; }
+    table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+    button { background-color: #f44336; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px; }
+    button:hover { background-color: #e53935; }
+    .form-group { margin-bottom: 15px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Admin: View All Bookings</h1>
+
+    <!-- Admin Login Section -->
+    <div id="adminLoginSection">
+      <label for="adminPassword">Enter Admin Password:</label>
+      <input type="password" id="adminPassword">
+      <button onclick="checkAdminPassword()">Enter</button>
+    </div>
+
+    <!-- Bookings Table -->
+    <div id="bookingsSection" style="display: none;">
+      <h2>Bookings</h2>
+      <table id="bookingTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Bookings will appear here -->
+        </tbody>
+      </table>
+      <button onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <script>
+    // Function to handle admin login and password check
+    function checkAdminPassword() {
+      const password = document.getElementById('adminPassword').value;
+
+      if (password === 'admin123') {
+        // Store login status in localStorage
+        localStorage.setItem('isAdmin', 'true');
+
+        // Show the bookings section after successful login
+        document.getElementById('adminLoginSection').style.display = 'none';
+        document.getElementById('bookingsSection').style.display = 'block';
+
+        renderBookings();
+      } else {
+        alert('Incorrect password!');
+      }
+    }
+
+    // Function to render bookings if the admin is authenticated
+    function renderBookings() {
+      if (localStorage.getItem('isAdmin') !== 'true') {
+        alert('You are not authorized to view this page!');
+        window.location.href = 'booking.html'; // Redirect back to the booking page
+        return;
+      }
+
+      const tableBody = document.getElementById('bookingTable').getElementsByTagName('tbody')[0];
+      const bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+
+      tableBody.innerHTML = ''; // Clear existing rows
+
+      // If no bookings are found
+      if (bookings.length === 0) {
+        const row = tableBody.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 3;
+        cell.textContent = 'No bookings available.';
+        cell.style.textAlign = 'center';
+      } else {
+        // Render each booking in the table
+        bookings.forEach(booking => {
+          const row = tableBody.insertRow();
+          row.innerHTML = `
+            <td>${new Date(booking.date).toLocaleString()}</td>
+            <td>${booking.name}</td>
+            <td>${booking.details}</td>
+          `;
+        });
+      }
+    }
+
+    // Function to handle logout
+    function logout() {
+      localStorage.removeItem('isAdmin');
+      document.getElementById('adminLoginSection').style.display = 'block';
+      document.getElementById('bookingsSection').style.display = 'none';
+    }
+
+    // Check if the admin is already logged in and show the appropriate section
+    if (localStorage.getItem('isAdmin') === 'true') {
+      document.getElementById('adminLoginSection').style.display = 'none';
+      document.getElementById('bookingsSection').style.display = 'block';
+      renderBookings();
+    }
+  </script>
+
+</body>
+</html>
